@@ -1,0 +1,12 @@
+[project]
+name = "coca-cola-supply-chain"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain>=0.3.27",
+    "langchain-google-genai>=2.1.12",
+    "python-dotenv>=1.1.1",
+    "snowflake-connector-python>=3.17.4",
+]
