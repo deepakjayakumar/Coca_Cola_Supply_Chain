@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic AI PoC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #response-area {
+            background-color: #e9e9e9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Coca-Cola Supply Chain Agent</h1>
+        <p>Type your request for the agent below. It will fetch data from Snowflake and provide a delivery plan.</p>
+        <textarea id="user-input" placeholder="e.g., Please assign all of today's pending orders to the available delivery drivers."></textarea>
+        <button onclick="runAgent()">Run Agent</button>
+        <div id="response-area">
+            Waiting for a response...
+        </div>
+    </div>
+
+    <script>
+        async function runAgent() {
+            const userInput = document.getElementById('user-input').value;
+            const responseArea = document.getElementById('response-area');
+            
+            // Clear previous response and show loading message
+            responseArea.textContent = 'Agent is thinking... this may take a moment.';
+
+            try {
+                // Make a POST request to your Flask API endpoint
+                const response = await fetch('/run-agent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    // Send the user's input as JSON
+                    body: JSON.stringify({ input: userInput }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Display the agent's response
+                responseArea.textContent = data.output;
+
+            } catch (error) {
+                console.error('Error:', error);
+                responseArea.textContent = `Error: Could not connect to the agent. Please ensure the backend server is running.`;
+            }
+        }
+    </script>
+</body>
+</html>

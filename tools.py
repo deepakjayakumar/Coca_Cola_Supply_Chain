@@ -117,3 +117,30 @@ if __name__ == '__main__':
     # Correct way to invoke the tool with a dictionary mapping
     result = assign_orders_to_driver.invoke({"assignments": dummy_assignments})
     print(result)
+
+
+# In your tools.py file, add the following code:
+import math
+
+@tool
+def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """
+    Calculates the distance in kilometers between two sets of geographical coordinates (latitude and longitude).
+    
+    Args:
+        lat1: The latitude of the first point.
+        lon1: The longitude of the first point.
+        lat2: The latitude of the second point.
+        lon2: The longitude of the second point.
+        
+    Returns:
+        The distance in kilometers.
+    """
+    R = 6371  # Radius of Earth in kilometers
+    dLat = math.radians(lat2 - lat1)
+    dLon = math.radians(lon2 - lon1)
+    a = math.sin(dLat / 2) * math.sin(dLat / 2) + math.cos(math.radians(lat1)) \
+        * math.cos(math.radians(lat2)) * math.sin(dLon / 2) * math.sin(dLon / 2)
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    distance = R * c
+    return distance

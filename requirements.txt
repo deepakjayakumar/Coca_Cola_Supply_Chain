@@ -1,0 +1,6 @@
+gradio
+langchain
+langchain-core
+langchain-google-genai
+python-dotenv
+snowflake-connector-python
