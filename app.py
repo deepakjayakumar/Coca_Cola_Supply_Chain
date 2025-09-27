@@ -224,7 +224,7 @@ with gr.Blocks(theme=COCA_COLA_THEME, css=CUSTOM_CSS,title="Agentic AI Supply Ch
         
         # LEFT COLUMN: NEW ORDERS (Input)
         with gr.Column(scale=1):
-            gr.Markdown("### 📦 NEW ORDERS (Awaiting Optimization)")
+            gr.Markdown("### 📦 NEW ORDERS (Awaiting Delivery Optimization)")
             new_orders_table = gr.Dataframe(
                 headers=ORDER_TABLE_HEADERS,
                 col_count=5,
