@@ -53,6 +53,10 @@ body {{
     padding: 0;
 }}
 
+footer {{
+    display: none !important;
+}}
+
 /* 2. Make the container sharp white with a subtle shadow */
 .gradio-container {{
     background-color: {COCA_COLA_WHITE_BG} !important; 
@@ -62,31 +66,38 @@ body {{
     max-width: 1200px;
 }}
 
-/* 3. Headings and Primary Text (Red and Black) */
-h1 {{ 
-    color: {COCA_COLA_RED_PRIMARY} !important; /* Coca-Cola Red */
-    font-weight: 900 !important; 
-}}
-h3 {{ 
-    color: {COCA_COLA_BLACK_TEXT} !important; 
-    font-weight: 600 !important;
-}}
+
 p, label, .gr-markdown, .gr-checkbox-label, .gr-label {{ 
     color: {COCA_COLA_BLACK_TEXT} !important; 
 }}
 
 /* 4. Button Styling (Crisp Red) */
 .gr-button-primary {{
-    background-color: {COCA_COLA_RED_PRIMARY} !important;
+    background-color: white !important;
     color: white !important;
     border: none !important;
     font-weight: bold !important;
+    margin-left: 0px;
+    padding-left: 0px;
+    width: 10px !important;
 }}
 
 .gr-button-secondary {{
     background-color: {COCA_COLA_BLACK_TEXT} !important; /* Black/Dark Grey */
     color: white !important;
     border: none !important;
+}}
+
+.run-icon-button.gr-button-secondary {{
+    background-color: {COCA_COLA_WHITE_BG} !important; /* White Background */
+    color: {COCA_COLA_RED_PRIMARY} !important; /* Red Icon */
+    border: 1px solid #E0E0E0 !important; /* Slight border for visibility */
+    min-width: 50px !important; /* Force a small width */
+    max-width: 50px !important; /* Force a small width */
+    height: 50px !important; /* Force a small height */
+    padding: 0 !important; /* Remove internal padding */
+    font-size: 24px !important; /* Make the icon larger */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }}
 
 /* 5. Dataframe Styling (Red Underline) */
@@ -99,6 +110,49 @@ p, label, .gr-markdown, .gr-checkbox-label, .gr-label {{
 .gr-dataframe tbody td {{
     color: {COCA_COLA_BLACK_TEXT} !important;
 }}
+
+
+/* 8. Logo specific styling */
+.logo-image {{
+    max-width: 180px;  /* Adjust this for overall logo width */
+    max-height: 80px; /* NEW: Set a max height to control vertical size */
+    width: auto !important; /* Allow width to adjust based on height */
+    height: auto !important; /* Allow height to adjust based on max-height */
+    object-fit: contain; /* Ensures the entire image is visible without cropping */
+    display: block;
+    margin: 0; /* Remove auto margin to potentially align better */
+    padding: 0;
+}}
+
+.no-gap-margin {{
+    padding: 0 !important;
+    margin: 0 !important;
+}}
+
+/* Ensure headings are pushed to the top */
+h1, h3 {{
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    line-height: 1.1; /* Keep lines close together */
+}}
+
+/* You might need to adjust margin on the h1 and h3 to bring them closer to the logo */
+h1 {{ 
+    color: {COCA_COLA_RED_PRIMARY} !important; /* Coca-Cola Red */
+    font-weight: 900 !important; 
+    text-align: left; /* Adjust alignment to flow with logo */
+    margin-bottom: 0px !important; /* Reduce space below H1 */
+    padding-top: 5px; /* Adjust if needed to align vertically with logo */
+    padding-left: 10px; /* Push it slightly to the right of the logo */
+}}
+h3 {{ 
+    color: {COCA_COLA_BLACK_TEXT} !important; 
+    font-weight: 600 !important;
+    text-align: left; /* Adjust alignment to flow with logo */
+    margin-top: 0px !important; /* Reduce space above H3 */
+    padding-left: 10px; /* Push it slightly to the right of the logo */
+}}
+
 """
 # ... rest of your app.py code ...
 # --- Agent Setup ---
@@ -168,17 +222,17 @@ def run_and_stream(user_input, existing_table_data):
     log_output = "--- AGENT LOG (Verbose) ---\n"
     
     # 1. Start Log
-    log_output += f"[{time.strftime('%H:%M:%S')}] 🟢 Agent Initializing...\n"
+    log_output += f" 🟢 Agent Initializing...\n"
     yield initial_orders_data, [], log_output 
     time.sleep(1) 
 
     # 2. Query/Reasoning Steps (Logs update, Tables stay static)
-    log_output += f"[{time.strftime('%H:%M:%S')}] 📊 Gathering Data from Snowflake (4 tables)...\n"
+    log_output += f" 📊 Gathering Data from Snowflake (4 tables)...\n"
     yield initial_orders_data, [], log_output
     time.sleep(1) 
 
     # 3. Agent Reasoning (LLM Call)
-    log_output += f"[{time.strftime('%H:%M:%S')}] 🧠 Running Optimization Algorithm...\n"
+    log_output += f" 🧠 Running Optimization Algorithm...\n"
     yield initial_orders_data, [], log_output
     time.sleep(1) 
     
@@ -187,10 +241,11 @@ def run_and_stream(user_input, existing_table_data):
     assignment_plan_text = full_response['output']
     
     # Step 4: Assignment Complete (The Visual Switch)
-    log_output += f"[{time.strftime('%H:%M:%S')}] ✅ Assignment Success! Moving Orders to Dispatch Queue.\n"
+    #log_output += f"[{time.strftime('%H:%M:%S')}] ✅ Assignment Success! Moving Orders to Dispatch Queue.\n"
+    log_output += f"✅ Assignment Success! Moving Orders to Dispatch Queue.\n"
     
     # --- NEW FEATURE: How I Did It Summary ---
-    log_output += "\n--- AGENT SUMMARY: How I Optimized the Plan ---\n"
+    log_output += "\n--- AGENT SUMMARY: How I Optimized the Delivery Execution ---\n"
     log_output += assignment_plan_text
     
     # Output the final state: Left side empty, Right side shows the initial data.
@@ -202,17 +257,29 @@ def initialize_ui():
 
 # --- Gradio Blocks Layout ---
 with gr.Blocks(theme=COCA_COLA_THEME, css=CUSTOM_CSS,title="Agentic AI Supply Chain PoC") as demo:
-    gr.Markdown("# Coca-Cola Delivery Optimization Agent ")
-    gr.Markdown("### *Demonstrating Autonomous Logistics Planning*")
+    with gr.Row():
+        with gr.Column(scale=0,min_width=200): # Use a column to contain and center the image
+            gr.Image(
+                value="assets/agent_ai_logo.png", # Path to your logo
+                show_share_button=False, 
+                show_download_button=False,
+                show_label=False,
+                show_fullscreen_button = False,
+                container=False, # Don't wrap in a container
+                elem_classes=["logo-image"] # Apply custom class for CSS
+            )
+        with gr.Column(scale=4, elem_classes=["no-gap-margin"]): # Allow the main title to take up more space
+            gr.Markdown("# Agentic AI for Delivery Execution")
+            #gr.Markdown("### *Demonstrating Autonomous Logistics Planning*")
 
     # ------------------- RUN BUTTON --------------------
-    with gr.Row():
-        run_btn = gr.Button("▶️ RUN OPTIMIZATION AGENT", variant="primary", scale=5)
+    with gr.Row(): 
+        with gr.Column(min_width=50, scale=0): 
+            run_btn = gr.Button("▶️", variant="secondary", scale=0, elem_classes=["run-icon-button"])
     
     # FIX: Ensure the Column has the 'scale' property. 
     # This correctly allocates the horizontal space for the Markdown component.
-        with gr.Column(scale=3): 
-            gr.Markdown("*(Orders move right once planning is complete)*")
+       #
         
         #clear_btn = gr.Button("Clear", variant="secondary", scale=0)
 
@@ -224,7 +291,7 @@ with gr.Blocks(theme=COCA_COLA_THEME, css=CUSTOM_CSS,title="Agentic AI Supply Ch
         
         # LEFT COLUMN: NEW ORDERS (Input)
         with gr.Column(scale=1):
-            gr.Markdown("### 📦 NEW ORDERS (Awaiting Delivery Optimization)")
+            gr.Markdown("### 📦 NEW ORDERS (Awaiting Optimization)")
             new_orders_table = gr.Dataframe(
                 headers=ORDER_TABLE_HEADERS,
                 col_count=5,
